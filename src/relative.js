@@ -1,6 +1,7 @@
 define([
-	"./paths"
-],function(paths){
+	"./paths",
+	"./resolve"
+],function(paths,resolve){
 
     /**
      * Solve the relative path from from to to.
@@ -27,8 +28,8 @@ define([
         var i;
         // Alright. Let's resolve these two to absolute paths and remove any
         // weirdness.
-        from = paths.resolve(from);
-        to = paths.resolve(to);
+        from = resolve(from);
+        to = resolve(to);
         var fromSegs = from.split(paths.sep);
         var toSegs = to.split(paths.sep);
         // Remove the first segment on both, as it's '' (both are absolute paths)

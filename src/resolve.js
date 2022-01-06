@@ -1,6 +1,6 @@
 define([
-	"./paths",
-	"./normalize"
+    "./paths",
+    "./normalize"
 ],function(paths,normalize){
     /**
      * Resolves to to an absolute path.
@@ -38,19 +38,19 @@ define([
      *   paths.resolve('wwwroot', 'static_files/png/', '../gif/image.gif')
      *   // if currently in /home/myself/node, it returns
      *   '/home/myself/node/wwwroot/static_files/gif/image.gif'
-     * @param [String,...] paths
+     * @param [String,...] segs
      * @return [String]
      */
     function resolve() {
-        var paths = [];
+        var segs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            paths[_i - 0] = arguments[_i];
+            segs[_i - 0] = arguments[_i];
         }
-        // Monitor for invalid paths, throw out empty paths, and look for the *last*
+        // Monitor for invalid segs, throw out empty segs, and look for the *last*
         // absolute path that we see.
         var processed = [];
-        for (var i = 0; i < paths.length; i++) {
-            var p = paths[i];
+        for (var i = 0; i < segs.length; i++) {
+            var p = segs[i];
             if (typeof p !== 'string') {
                 throw new TypeError("Invalid argument type to paths.join: " + (typeof p));
             }
@@ -68,6 +68,8 @@ define([
         if (resolved.length > 1 && resolved.charAt(resolved.length - 1) === paths.sep) {
             return resolved.substr(0, resolved.length - 1);
         }
+        /*
+        /// 
         // Special: If it doesn't start with '/', it's relative and we need to append
         // the current directory.
         if (resolved.charAt(0) !== paths.sep) {
@@ -85,6 +87,7 @@ define([
                 resolved = cwd;
             }
         }
+        */
         return resolved;
     }
 

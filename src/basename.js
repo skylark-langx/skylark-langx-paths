@@ -1,6 +1,7 @@
 define([
-	"./paths"
-],function(paths){
+	"./paths",
+    "./normalize"
+],function(paths,normalize){
     /**
      * Return the last portion of a path. Similar to the Unix basename command.
      * @example Usage example
@@ -22,7 +23,7 @@ define([
             return p;
         }
         // Normalize the string first to remove any weirdness.
-        p = paths.normalize(p);
+        p = normalize(p);
         // Get the last part of the string.
         var sections = p.split(paths.sep);
         var lastPart = sections[sections.length - 1];

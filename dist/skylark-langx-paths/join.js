@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["./paths","./normalize"],function(n,r){return n.join=function(){for(var n=[],t=0;t<arguments.length;t++)n[t-0]=arguments[t];for(var e=[],o=0;o<n.length;o++){var i=n[o];if("string"!=typeof i)throw new TypeError("Invalid argument type to paths.join: "+typeof i);""!==i&&e.push(i)}return r(e.join(n.sep))}});
+define(["./paths","./normalize"],function(n,r){return n.join=function(){for(var e=[],t=0;t<arguments.length;t++)e[t-0]=arguments[t];for(var o=[],i=0;i<e.length;i++){var f=e[i];if("string"!=typeof f)throw new TypeError("Invalid argument type to segs.join: "+typeof f);""!==f&&o.push(f)}return r(o.join(n.sep))}});
 //# sourceMappingURL=sourcemaps/join.js.map

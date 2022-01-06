@@ -132,92 +132,6 @@ define('skylark-langx-paths/paths',[
 
 	return skylark.attach("langx.paths",paths);
 });
-define('skylark-langx-paths/basename',[
-	"./paths"
-],function(paths){
-    /**
-     * Return the last portion of a path. Similar to the Unix basename command.
-     * @example Usage example
-     *   paths.basename('/foo/bar/baz/asdf/quux.html')
-     *   // returns
-     *   'quux.html'
-     *
-     *   paths.basename('/foo/bar/baz/asdf/quux.html', '.html')
-     *   // returns
-     *   'quux'
-     * @param [String] p
-     * @param [String?] ext
-     * @return [String]
-     */
-    function basename(p, ext) {
-        if (ext === void 0) { ext = ""; }
-        // Special case: Normalize will modify this to '.'
-        if (p === '') {
-            return p;
-        }
-        // Normalize the string first to remove any weirdness.
-        p = paths.normalize(p);
-        // Get the last part of the string.
-        var sections = p.split(paths.sep);
-        var lastPart = sections[sections.length - 1];
-        // Special case: If it's empty, then we have a string like so: foo/
-        // Meaning, 'foo' is guaranteed to be a directory.
-        if (lastPart === '' && sections.length > 1) {
-            return sections[sections.length - 2];
-        }
-        // Remove the extension, if need be.
-        if (ext.length > 0) {
-            var lastPartExt = lastPart.substr(lastPart.length - ext.length);
-            if (lastPartExt === ext) {
-                return lastPart.substr(0, lastPart.length - ext.length);
-            }
-        }
-        return lastPart;
-    }
-
-    return paths.basename = basename;
-});
-define('skylark-langx-paths/dirname',[
-	"./paths"
-],function(paths){
-    /**
-     * Return the directory name of a path. Similar to the Unix `dirname` command.
-     *
-     * Note that BrowserFS does not validate if the path is actually a valid
-     * directory.
-     * @example Usage example
-     *   paths.dirname('/foo/bar/baz/asdf/quux')
-     *   // returns
-     *   '/foo/bar/baz/asdf'
-     * @param [String] p The path to get the directory name of.
-     * @return [String]
-     */
-    function dirname(p) {
-        // We get rid of //, but we don't modify anything else (e.g. any extraneous .
-        // and ../ are kept intact)
-        p = paths._removeDuplicateSeps(p);
-        var absolute = p.charAt(0) === paths.sep;
-        var sections = p.split(paths.sep);
-        // Do 1 if it's /foo/bar, 2 if it's /foo/bar/
-        if (sections.pop() === '' && sections.length > 0) {
-            sections.pop();
-        }
-        // # of sections needs to be > 1 if absolute, since the first section is '' for '/'.
-        // If not absolute, the first section is the first part of the path, and is OK
-        // to return.
-        if (sections.length > 1 || (sections.length === 1 && !absolute)) {
-            return sections.join(paths.sep);
-        }
-        else if (absolute) {
-            return paths.sep;
-        }
-        else {
-            return '.';
-        }
-    }
-
-    return paths.dirname = dirname;
-});
 define('skylark-langx-paths/normalize',[
 	"./paths"
 ],function(paths){
@@ -283,6 +197,93 @@ define('skylark-langx-paths/normalize',[
     }
 
     return paths.normalize = normalize;
+});
+define('skylark-langx-paths/basename',[
+	"./paths",
+    "./normalize"
+],function(paths,normalize){
+    /**
+     * Return the last portion of a path. Similar to the Unix basename command.
+     * @example Usage example
+     *   paths.basename('/foo/bar/baz/asdf/quux.html')
+     *   // returns
+     *   'quux.html'
+     *
+     *   paths.basename('/foo/bar/baz/asdf/quux.html', '.html')
+     *   // returns
+     *   'quux'
+     * @param [String] p
+     * @param [String?] ext
+     * @return [String]
+     */
+    function basename(p, ext) {
+        if (ext === void 0) { ext = ""; }
+        // Special case: Normalize will modify this to '.'
+        if (p === '') {
+            return p;
+        }
+        // Normalize the string first to remove any weirdness.
+        p = normalize(p);
+        // Get the last part of the string.
+        var sections = p.split(paths.sep);
+        var lastPart = sections[sections.length - 1];
+        // Special case: If it's empty, then we have a string like so: foo/
+        // Meaning, 'foo' is guaranteed to be a directory.
+        if (lastPart === '' && sections.length > 1) {
+            return sections[sections.length - 2];
+        }
+        // Remove the extension, if need be.
+        if (ext.length > 0) {
+            var lastPartExt = lastPart.substr(lastPart.length - ext.length);
+            if (lastPartExt === ext) {
+                return lastPart.substr(0, lastPart.length - ext.length);
+            }
+        }
+        return lastPart;
+    }
+
+    return paths.basename = basename;
+});
+define('skylark-langx-paths/dirname',[
+	"./paths"
+],function(paths){
+    /**
+     * Return the directory name of a path. Similar to the Unix `dirname` command.
+     *
+     * Note that BrowserFS does not validate if the path is actually a valid
+     * directory.
+     * @example Usage example
+     *   paths.dirname('/foo/bar/baz/asdf/quux')
+     *   // returns
+     *   '/foo/bar/baz/asdf'
+     * @param [String] p The path to get the directory name of.
+     * @return [String]
+     */
+    function dirname(p) {
+        // We get rid of //, but we don't modify anything else (e.g. any extraneous .
+        // and ../ are kept intact)
+        p = paths._removeDuplicateSeps(p);
+        var absolute = p.charAt(0) === paths.sep;
+        var sections = p.split(paths.sep);
+        // Do 1 if it's /foo/bar, 2 if it's /foo/bar/
+        if (sections.pop() === '' && sections.length > 0) {
+            sections.pop();
+        }
+        // # of sections needs to be > 1 if absolute, since the first section is '' for '/'.
+        // If not absolute, the first section is the first part of the path, and is OK
+        // to return.
+        if (sections.length > 1 || (sections.length === 1 && !absolute)) {
+            return sections.join(paths.sep);
+        }
+        else if (absolute) {
+            return paths.sep;
+        }
+        else {
+            return '.';
+        }
+    }
+
+    return paths.dirname = dirname;
 });
 define('skylark-langx-paths/extname',[
 	"./paths",
@@ -380,21 +381,21 @@ define('skylark-langx-paths/join',[
      *   paths.join('foo', {}, 'bar')
      *   // throws exception
      *   TypeError: Arguments to paths.join must be strings
-     * @param [String,...] paths Each component of the path
+     * @param [String,...] segs Each component of the path
      * @return [String]
      */
     function join() {
-        var paths = [];
+        var segs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            paths[_i - 0] = arguments[_i];
+            segs[_i - 0] = arguments[_i];
         }
         // Required: Prune any non-strings from the path. I also prune empty segments
         // so we can do a simple join of the array.
         var processed = [];
-        for (var i = 0; i < paths.length; i++) {
-            var segment = paths[i];
+        for (var i = 0; i < segs.length; i++) {
+            var segment = segs[i];
             if (typeof segment !== 'string') {
-                throw new TypeError("Invalid argument type to paths.join: " + (typeof segment));
+                throw new TypeError("Invalid argument type to segs.join: " + (typeof segment));
             }
             else if (segment !== '') {
                 processed.push(segment);
@@ -866,9 +867,105 @@ define('skylark-langx-paths/path',[
     return paths.Path = Path;
 });
 
+define('skylark-langx-paths/resolve',[
+    "./paths",
+    "./normalize"
+],function(paths,normalize){
+    /**
+     * Resolves to to an absolute path.
+     *
+     * If to isn't already absolute from arguments are prepended in right to left
+     * order, until an absolute path is found. If after using all from paths still
+     * no absolute path is found, the current working directory is used as well.
+     * The resulting path is normalized, and trailing slashes are removed unless
+     * the path gets resolved to the root directory. Non-string arguments are
+     * ignored.
+     *
+     * Another way to think of it is as a sequence of cd commands in a shell.
+     *
+     *     paths.resolve('foo/bar', '/tmp/file/', '..', 'a/../subfile')
+     *
+     * Is similar to:
+     *
+     *     cd foo/bar
+     *     cd /tmp/file/
+     *     cd ..
+     *     cd a/../subfile
+     *     pwd
+     *
+     * The difference is that the different paths don't need to exist and may also
+     * be files.
+     * @example Usage example
+     *   paths.resolve('/foo/bar', './baz')
+     *   // returns
+     *   '/foo/bar/baz'
+     *
+     *   paths.resolve('/foo/bar', '/tmp/file/')
+     *   // returns
+     *   '/tmp/file'
+     *
+     *   paths.resolve('wwwroot', 'static_files/png/', '../gif/image.gif')
+     *   // if currently in /home/myself/node, it returns
+     *   '/home/myself/node/wwwroot/static_files/gif/image.gif'
+     * @param [String,...] segs
+     * @return [String]
+     */
+    function resolve() {
+        var segs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            segs[_i - 0] = arguments[_i];
+        }
+        // Monitor for invalid segs, throw out empty segs, and look for the *last*
+        // absolute path that we see.
+        var processed = [];
+        for (var i = 0; i < segs.length; i++) {
+            var p = segs[i];
+            if (typeof p !== 'string') {
+                throw new TypeError("Invalid argument type to paths.join: " + (typeof p));
+            }
+            else if (p !== '') {
+                // Remove anything that has occurred before this absolute path, as it
+                // doesn't matter.
+                if (p.charAt(0) === paths.sep) {
+                    processed = [];
+                }
+                processed.push(p);
+            }
+        }
+        // Special: Remove trailing slash unless it's the root
+        var resolved = normalize(processed.join(paths.sep));
+        if (resolved.length > 1 && resolved.charAt(resolved.length - 1) === paths.sep) {
+            return resolved.substr(0, resolved.length - 1);
+        }
+        /*
+        /// 
+        // Special: If it doesn't start with '/', it's relative and we need to append
+        // the current directory.
+        if (resolved.charAt(0) !== paths.sep) {
+            // Remove ./, since we're going to append the current directory.
+            if (resolved.charAt(0) === '.' && (resolved.length === 1 || resolved.charAt(1) === paths.sep)) {
+                resolved = resolved.length === 1 ? '' : resolved.substr(2);
+            }
+            // Append the current directory, which *must* be an absolute path.
+            var cwd = process.cwd();
+            if (resolved !== '') {
+                // cwd will never end in a /... unless it's the root.
+                resolved = normalize(cwd + (cwd !== '/' ? paths.sep : '') + resolved);
+            }
+            else {
+                resolved = cwd;
+            }
+        }
+        */
+        return resolved;
+    }
+
+    return paths.resolve = resolve;
+});
 define('skylark-langx-paths/relative',[
-	"./paths"
-],function(paths){
+	"./paths",
+	"./resolve"
+],function(paths,resolve){
 
     /**
      * Solve the relative path from from to to.
@@ -895,8 +992,8 @@ define('skylark-langx-paths/relative',[
         var i;
         // Alright. Let's resolve these two to absolute paths and remove any
         // weirdness.
-        from = paths.resolve(from);
-        to = paths.resolve(to);
+        from = resolve(from);
+        to = resolve(to);
         var fromSegs = from.split(paths.sep);
         var toSegs = to.split(paths.sep);
         // Remove the first segment on both, as it's '' (both are absolute paths)
@@ -944,98 +1041,6 @@ define('skylark-langx-paths/relative',[
     }
 
     return paths.relative =  relative;
-});
-define('skylark-langx-paths/resolve',[
-	"./paths",
-	"./normalize"
-],function(paths,normalize){
-    /**
-     * Resolves to to an absolute path.
-     *
-     * If to isn't already absolute from arguments are prepended in right to left
-     * order, until an absolute path is found. If after using all from paths still
-     * no absolute path is found, the current working directory is used as well.
-     * The resulting path is normalized, and trailing slashes are removed unless
-     * the path gets resolved to the root directory. Non-string arguments are
-     * ignored.
-     *
-     * Another way to think of it is as a sequence of cd commands in a shell.
-     *
-     *     paths.resolve('foo/bar', '/tmp/file/', '..', 'a/../subfile')
-     *
-     * Is similar to:
-     *
-     *     cd foo/bar
-     *     cd /tmp/file/
-     *     cd ..
-     *     cd a/../subfile
-     *     pwd
-     *
-     * The difference is that the different paths don't need to exist and may also
-     * be files.
-     * @example Usage example
-     *   paths.resolve('/foo/bar', './baz')
-     *   // returns
-     *   '/foo/bar/baz'
-     *
-     *   paths.resolve('/foo/bar', '/tmp/file/')
-     *   // returns
-     *   '/tmp/file'
-     *
-     *   paths.resolve('wwwroot', 'static_files/png/', '../gif/image.gif')
-     *   // if currently in /home/myself/node, it returns
-     *   '/home/myself/node/wwwroot/static_files/gif/image.gif'
-     * @param [String,...] paths
-     * @return [String]
-     */
-    function resolve() {
-        var paths = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            paths[_i - 0] = arguments[_i];
-        }
-        // Monitor for invalid paths, throw out empty paths, and look for the *last*
-        // absolute path that we see.
-        var processed = [];
-        for (var i = 0; i < paths.length; i++) {
-            var p = paths[i];
-            if (typeof p !== 'string') {
-                throw new TypeError("Invalid argument type to paths.join: " + (typeof p));
-            }
-            else if (p !== '') {
-                // Remove anything that has occurred before this absolute path, as it
-                // doesn't matter.
-                if (p.charAt(0) === paths.sep) {
-                    processed = [];
-                }
-                processed.push(p);
-            }
-        }
-        // Special: Remove trailing slash unless it's the root
-        var resolved = normalize(processed.join(paths.sep));
-        if (resolved.length > 1 && resolved.charAt(resolved.length - 1) === paths.sep) {
-            return resolved.substr(0, resolved.length - 1);
-        }
-        // Special: If it doesn't start with '/', it's relative and we need to append
-        // the current directory.
-        if (resolved.charAt(0) !== paths.sep) {
-            // Remove ./, since we're going to append the current directory.
-            if (resolved.charAt(0) === '.' && (resolved.length === 1 || resolved.charAt(1) === paths.sep)) {
-                resolved = resolved.length === 1 ? '' : resolved.substr(2);
-            }
-            // Append the current directory, which *must* be an absolute path.
-            var cwd = process.cwd();
-            if (resolved !== '') {
-                // cwd will never end in a /... unless it's the root.
-                resolved = normalize(cwd + (cwd !== '/' ? paths.sep : '') + resolved);
-            }
-            else {
-                resolved = cwd;
-            }
-        }
-        return resolved;
-    }
-
-    return paths.resolve = resolve;
 });
 define('skylark-langx-paths/main',[
 	"./paths",
