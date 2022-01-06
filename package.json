@@ -1,0 +1,36 @@
+{
+  "name": "skylark-langx-paths",
+  "version": "0.9.0",
+  "description": "The skylark JavaScript language extension library.",
+  "main": "./index",
+  "scripts": {
+    "build": "slib build ."
+  },
+  "homepage": "www.skylarkjs.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skylarklangx/skylark-langx-paths.git"
+  },
+  "keywords": [
+    "skylark",
+    "skylarkjs",
+    "javacript",
+    "language extension"
+  ],
+  "exports": {
+    "./": "./dist/uncompressed/skylark-langx-paths/"
+  },
+  "author": "Hudaokeji Co.,Ltd",
+  "license": "MIT",
+  "bugs": "https://github.com/skylarklangx/skylark-langx/issues",
+  "dependencies": {
+    "skylark-langx-constructs": "git+https://github.com/skylark-langx/skylark-langx-constructs.git",
+    "skylark-langx-ns": "git+https://github.com/skylark-langx/skylark-langx-ns.git",
+    "skylark-langx-objects": "git+https://github.com/skylark-langx/skylark-langx-objects.git",
+    "skylark-langx-strings": "git+https://github.com/skylark-langx/skylark-langx-strings.git",
+    "skylark-langx-types": "git+https://github.com/skylark-langx/skylark-langx-types.git"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
