@@ -18,7 +18,8 @@
     "language extension"
   ],
   "exports": {
-    "./": "./dist/uncompressed/skylark-langx-paths/"
+    ".": "./dist/uncompressed/skylark-langx-paths/main.js",
+    "./*": "./dist/uncompressed/skylark-langx-paths/*.js"
   },
   "author": "Hudaokeji Co.,Ltd",
   "license": "MIT",
