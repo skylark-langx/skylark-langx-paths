@@ -9,7 +9,7 @@
   "homepage": "www.skylarkjs.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/skylarklangx/skylark-langx-paths.git"
+    "url": "https://github.com/skylarklangx/skylark-langx-paths.git"
   },
   "keywords": [
     "skylark",
@@ -25,11 +25,11 @@
   "license": "MIT",
   "bugs": "https://github.com/skylarklangx/skylark-langx/issues",
   "dependencies": {
-    "skylark-langx-constructs": "git+https://github.com/skylark-langx/skylark-langx-constructs.git",
-    "skylark-langx-ns": "git+https://github.com/skylark-langx/skylark-langx-ns.git",
-    "skylark-langx-objects": "git+https://github.com/skylark-langx/skylark-langx-objects.git",
-    "skylark-langx-strings": "git+https://github.com/skylark-langx/skylark-langx-strings.git",
-    "skylark-langx-types": "git+https://github.com/skylark-langx/skylark-langx-types.git"
+    "skylark-langx-constructs": "https://github.com/skylark-langx/skylark-langx-constructs.git",
+    "skylark-langx-ns": "https://github.com/skylark-langx/skylark-langx-ns.git",
+    "skylark-langx-objects": "https://github.com/skylark-langx/skylark-langx-objects.git",
+    "skylark-langx-strings": "https://github.com/skylark-langx/skylark-langx-strings.git",
+    "skylark-langx-types": "https://github.com/skylark-langx/skylark-langx-types.git"
   },
   "engines": {
     "node": ">=0.8.0"
